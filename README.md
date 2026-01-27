@@ -5,7 +5,7 @@ This breakdown will cover more of the Python and Software Design aspects of my c
 
 For my pipeline tools I am above all designing with the goal to make the tool easy to use by artists, and easy to extend by programmers. Project goals and requirements vary widely, so tools planned for adaptibility and longevity are most likely to be kept and used in a pipeline.
 
-PYSIDE UI
+#PySide UI
 
 The majority of my tools are packaged into Pyside2 UIs designed under the assumption that the user will not be expected to interact with the unerlying Python logic. I've worked with control rig systems that were did not have a user interface, so creating a rig required scripting familiarity and the need to dig through the documentation to get up and running. In my tool, interactions with the UI essentially build out that Python script by choosing functions and class instances, allowing the rigs to exist as exportable and writable templates behind the scenes (more on that later).
 
@@ -15,11 +15,11 @@ As a general design rule, I have made it a goal to have no cmds or OpenMaya impo
 
 Now moving on to the main logic of the modules
 
-DESIGNING FOR DEVELOPER EXTENSIBILITY
+#Designing for Developer Extensibility
 
 
 
-DESIGNING FOR ARTISTS
+#Designing for Artists
 
 My control rigs are built by thinking of a creature being rigged as a collection of body part classes, instead of one giant character. Writing a script to handle just the current human project is not considering the four armed character that is next on the to do list. Modularity is the most popular solution for control rig scripts, and I've used this as my foundational approach.
 
