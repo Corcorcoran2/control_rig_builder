@@ -1,0 +1,122 @@
+{
+    "_comment0":"This is an example of the generated .json file when using the Save As Template feature in the Module Builder UI.",
+    "_comment1":"Logic for reading and writing is in the template.py file.",
+
+
+
+    "human": {
+        "modules": {
+            "human_arm_L": {
+                "features": [
+                    "FK",
+                    "IK"
+                ],
+                "inputs": [
+                    "human_spine_M"
+                ],
+                "outputs": [
+                    "human_hand_L"
+                ]
+            },
+            "human_arm_R": {
+                "features": [
+                    "FK",
+                    "IK"
+                ],
+                "inputs": [
+                    "human_spine_M"
+                ],
+                "outputs": [
+                    "human_hand_R"
+                ]
+            },
+            "human_foot_L": {
+                "features": [
+                    "FK"
+                ],
+                "inputs": [
+                    "human_leg_L"
+                ],
+                "outputs": []
+            },
+            "human_foot_R": {
+                "features": [
+                    "FK"
+                ],
+                "inputs": [
+                    "human_leg_R"
+                ],
+                "outputs": []
+            },
+            "human_hand_L": {
+                "features": [
+                    "FK"
+                ],
+                "inputs": [
+                    "human_arm_L"
+                ],
+                "outputs": []
+            },
+            "human_hand_R": {
+                "features": [
+                    "FK"
+                ],
+                "inputs": [
+                    "human_arm_R"
+                ],
+                "outputs": []
+            },
+            "human_leg_L": {
+                "features": [
+                    "FK",
+                    "IK",
+                    "FootRoll"
+                ],
+                "inputs": [
+                    "human_spine_M"
+                ],
+                "outputs": [
+                    "human_foot_L"
+                ]
+            },
+            "human_leg_R": {
+                "features": [
+                    "FK",
+                    "IK",
+                    "FootRoll"
+                ],
+                "inputs": [
+                    "human_spine_M"
+                ],
+                "outputs": [
+                    "human_foot_R"
+                ]
+            },
+            "human_spine_M": {
+                "features": [
+                    "FK",
+                    "Pelvis"
+                ],
+                "inputs": [
+                    "world"
+                ],
+                "outputs": [
+                    "human_arm_L",
+                    "human_arm_R",
+                    "human_leg_L",
+                    "human_leg_R"
+                ]
+            },
+            "world": {
+                "features": [
+                    "FK",
+                    "SpaceSwitch"
+                ],
+                "inputs": [],
+                "outputs": [
+                    "human_spine_M"
+                ]
+            }
+        }
+    }
+}

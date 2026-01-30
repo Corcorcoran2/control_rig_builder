@@ -1,9 +1,13 @@
+#Module parts of my toolset can be expanded by editing or adding classes. However, to allow artists to package modules into full rigs
+#like a human for example, the UI user can export the systems they've added to a .json file to be read later. The file will be parsed to
+#call the same functions that the UI does, but at a later time on a rig with the same skeletal heirarchy.
+
 import maya.cmds as cmds
-import string
-import maya.api.OpenMaya as om
 import json
+
 import autorig.control_rig.module.query as module_query
-from PySide2.QtWidgets import QListWidget, QFileDialog
+
+from PySide2.QtWidgets import QFileDialog
 
 def save_as_template(template_name):
     file_path, _ = QFileDialog.getSaveFileName(
@@ -67,13 +71,10 @@ def save_as_template(template_name):
     return data
 
 def load_template(file_path):
-    
-    
     with open(file_path, "r") as f:
             data = json.load(f)
     module_list = list(data['human']['modules'].keys())
     
-    #create module
     for module in module_list:
         module_cls = module_query.find_cls_module(module)
         module_instance = module_cls.create_from_name(module)
@@ -85,7 +86,6 @@ def load_template(file_path):
         
         features = data['human']['modules'][module]['features']
         for feature in features:
-            print(module, feature)
             module_instance.add_feature(feature)
     
         inputs = data['human']['modules'][module]['inputs']

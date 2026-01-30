@@ -1,14 +1,13 @@
+#Base class to all modules that can be used to rig creatures in my pipeline.
+
 from typing import List, Dict
-import maya.cmds as cmds
-import autorig.control_rig.module.utils as module_utils
+from abc import ABC, abstractmethod
+
 import autorig.control_rig.module.error as module_error
 import autorig.control_rig.module.setup as module_setup
-import autorig.control_rig.module.connect_modules as connect_modules
 import autorig.control_rig.feature.base as feature_base
 
-import importlib
 from autorig.control_rig.module.registry import MODULE_REGISTRY
-from abc import ABC, abstractmethod
 
 class ModuleBase(ABC):
     cls_module_name = ""
@@ -94,12 +93,10 @@ class ModuleBase(ABC):
     def initialize_multi_features(self):
         if self.supported_multi_features:
             for feature_cls in self.supported_multi_features:
-                #print(self)
-                #print(feature_cls)
                 feature = feature_cls(self)
                 self.initialized_multi_features[feature.feature_name] = feature
     
-    ''' Make nodes for module systems'''
+    #Make nodes for module systems
 
     def validate_bind_joints(self):
         is_valid = module_setup.get_bind_joints(self.instance_module_name)   
@@ -124,7 +121,6 @@ class ModuleBase(ABC):
         module_setup.create_module_group_nodes(self.instance_module_name)    
 
     def add_feature(self,feature):
-        print(self.initialized_features)
         instance_feature = self.initialized_features.get(feature)
         if instance_feature:
             ID_list = self.supported_features[type(instance_feature)]
@@ -141,62 +137,9 @@ class ModuleBase(ABC):
     def remove_feature(self,feature):
         instance_feature = self.initialized_features.get(feature)
         if instance_feature:
-            ID_list = self.supported_features[type(instance_feature)]
+            self.supported_features[type(instance_feature)]
             
             instance_feature.remove()
-            #instance_feature.attach(self)
         else:
             module_error.send_warning(f"Feature not supported by {self.cls_module_name} class.")
-    
-    def add_module_connection(self, upstream_module,downstream_module):
-        current_features = cmds.getAttr(f"{downstream_module.instance_module_name}.moduleFeatures")
-
-        if not current_features:
-            module_error.send_warning(f"{downstream_module} needs a feature to make a connection.")
-            return
-        
-        current_input = cmds.getAttr(f"{downstream_module.instance_module_name}.inputModule") or ""
-        if current_input:
-            return
-        current_input = f"{upstream_module.instance_module_name};"
-        cmds.setAttr(f"{downstream_module.instance_module_name}.inputModule", current_input,type="string")
-
-        current_outputs = cmds.getAttr(f"{upstream_module.instance_module_name}.outputModules") or ""
-        current_outputs = f"{current_outputs}{downstream_module.instance_module_name};"
-
-        cmds.setAttr(f"{upstream_module.instance_module_name}.outputModules", current_outputs,type="string")
-
-        connect_modules.connect_modules(upstream_module, downstream_module)
-
-
-
-
-
-
-
-
-
-
-
-
-    def remove_module(self):
-        module_utils.remove_module(self.module_name)
-
-    def create_FK(self,joint_ID_list):
-        module_utils.create_FK_chain(joint_ID_list, use_ID=True)   
-    
-    
-
-    def remove_module_connection(self,upstream_module,downstream_module):
-        module_utils.disconnect_modules(upstream_module,downstream_module)
-
-    def add_module_attr(self, feature, attr_type):
-        old_attr = cmds.getAttr(f"{self.instance_module_name}.{attr_type}") or ""
-        new_attr = f"{old_attr}{feature};"
-        cmds.setAttr(f"{self.instance_module_name}.{attr_type}", new_attr, type='string') 
-
-    def remove_module_attr(self,feature,attr_type):              
-        old_attr = cmds.getAttr(f"{self.module_name}.{attr_type}")
-        new_attr = old_attr.replace(f"{feature};", "")
-        cmds.setAttr(f"{self.module_name}.{attr_type}", new_attr, type='string')
    

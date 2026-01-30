@@ -13,7 +13,7 @@ import autorig.control_rig.module.utils as module_utils
 import autorig.control_rig.feature.switch as feature_switch
 
 class ModuleHumanLeg(ModuleBase):
-    #Name is defined at class level to be added to MODULE_REGISTRY for UI detection
+    #Name is defined at class level to be added to MODULE_REGISTRY for UI detection.
     cls_module_name = "human_leg"
     
     def __init__ (self, side, *args, **kwargs):
@@ -24,7 +24,7 @@ class ModuleHumanLeg(ModuleBase):
     def ID_list(self):
         return [f"leg_{self.side}_1",f"leg_{self.side}_2",f"leg_{self.side}_3"]
     
-    #Compatible feature classes specified here along with ID list range to apply the system
+    #Compatible feature classes specified here along with ID list range to apply the system.
     @property
     def supported_features(self):
         return {FeatureFK: self.ID_list,

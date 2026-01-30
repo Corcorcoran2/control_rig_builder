@@ -1,7 +1,13 @@
+#Logic for FK feature
+
 import maya.cmds as cmds
 from dataclasses import dataclass
+
 import autorig.control_rig.module.create_node as create_node
 import autorig.control_rig.module.query as module_query
+
+#I use dataclasses to hold name references to all nodes created in features. This is useful when parenting everything
+#organizationally in the outliner at the end of creation.
 
 @dataclass
 class FKLinkData:
@@ -69,13 +75,9 @@ def create_FK_link_data(link_name: str, module_name: str) -> FKLinkData:
     if not driver_joint:
         cmds.error(f"No driver joint ID in scene matches {link_name}.")
 
-       
-    
     guide_locator = create_node.create_module_locator(f"{link_name}_FK_guide", {'moduleParent': module_name,
                                               'featureType':"FK_guide"})
     
-    
-
     FK_control = create_node.create_placeholder_curve(f"{link_name}_FK_ctrl", {'moduleParent': module_name,
                                               'featureType':"FK_control",
                                               'controlID': link_name})
@@ -94,6 +96,8 @@ def create_FK_link_data(link_name: str, module_name: str) -> FKLinkData:
         FK_joint = FK_joint
     )
 
+#FK chains are made by creating "links." Links are a set of driver joint, FK joint, NURBS curve, and guide locators.
+
 def create_FK_link(link_name: str, module_name: str,match_bind: bool =False) -> str:
     link_data = create_FK_link_data(link_name,module_name)
 
@@ -110,15 +114,10 @@ def create_FK_link(link_name: str, module_name: str,match_bind: bool =False) -> 
     cmds.delete(constructionHistory=True)
     cmds.select(clear=True)
 
-    
-
     cmds.connectAttr(f"{link_data.guide_locator}.worldMatrix[0]", f"{link_data.FK_control}.offsetParentMatrix")
 
     cmds.connectAttr(f"{link_data.FK_control}.worldMatrix[0]", f"{link_data.FK_joint}.offsetParentMatrix")
     
-    
-    
-
     cmds.setAttr(f"{link_data.FK_joint}.visibility", 0)
     cmds.setAttr(f"{link_data.driver_joint}.visibility", 0)
 
@@ -138,7 +137,6 @@ def create_FK_chain(link_names: list[str], aim_direction: float, module_name: st
     module_locator = module_query.find_single_node({"moduleParent": module_name,
                                                            "featureType": "module_root"})
                                                           
-    
     cmds.connectAttr(f"{module_locator}.worldMatrix[0]", f"{root_locator}.offsetParentMatrix")
     cmds.matchTransform(root_locator,driver_joint, position=True)
 
@@ -155,9 +153,7 @@ def create_FK_chain(link_names: list[str], aim_direction: float, module_name: st
 
         cmds.matchTransform(link_data_cls.aim_primary_locator, link_data_cls.driver_joint)
         cmds.xform(link_data_cls.aim_secondary_locator, r=True, os=True, t=(1,0,0))
-
-        
-        
+      
         cmds.matchTransform(link_data_cls.aim_secondary_locator, link_data_cls.driver_joint)
         cmds.xform(link_data_cls.aim_secondary_locator, r=True, os=True, t=(0,1,0))
         link_data.append(link_data_cls)
@@ -179,14 +175,10 @@ def create_FK_chain(link_names: list[str], aim_direction: float, module_name: st
             f"{current.aim_inverse_matrix}.inputMatrix"
         )
 
-        #cmds.connectAttr(f"{root_locator}.worldMatrix[0]", f"{current.aim_primary_locator}.offsetParentMatrix")
-
         cmds.connectAttr(
             f"{current.aim_primary_locator}.worldMatrix[0]",
             f"{current.aim_matrix}.primaryTargetMatrix"
         )
-
-        #cmds.connectAttr(f"{root_locator}.worldMatrix[0]", f"{current.aim_secondary_locator}.offsetParentMatrix")
 
         cmds.connectAttr(
             f"{current.aim_secondary_locator}.worldMatrix[0]",
@@ -207,7 +199,6 @@ def create_FK_chain(link_names: list[str], aim_direction: float, module_name: st
 
         cmds.connectAttr(f"{current.parent_offset_mult_matrix}.matrixSum", f"{current.world_mult_matrix}.matrixIn[0]")
         
-
         cmds.connectAttr(f"{current.world_mult_matrix}.matrixSum", f"{current.FK_control}.offsetParentMatrix",f=True)
 
     if not keep_end_control:

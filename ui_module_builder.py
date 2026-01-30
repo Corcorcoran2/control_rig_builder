@@ -1,5 +1,7 @@
 #Module Builder UI from my Character Rigging Pipeline. To promote structure and organization, UI classes do not import
-# cmds or OpenMaya, instead only handling PySide related functionality. Maya specific logic exists in various helper packages
+#cmds or OpenMaya, instead only handling PySide related functionality. Maya specific logic exists in various helper packages.
+
+#UI initialization abridged for brevity.
 
 from PySide2.QtWidgets import QListWidget, QFileDialog, QWidget, QLabel, QVBoxLayout, QHBoxLayout
 
@@ -26,7 +28,7 @@ class ModuleBuilder(UIBase):
         module_registry.register_modules()
 
     #PySide UI tools in my pipelines extend a base class that reinforces abstract properties to make sure basic
-    #attributes are always initialized
+    #attributes are always initialized.
 
     @property
     def window_title(self) -> str:
@@ -40,7 +42,7 @@ class ModuleBuilder(UIBase):
     def window_height(self) -> float:
         return 500
     
-    #The widgets module holds functions that improve readability for the creation of PySide widgets and layouts
+    #The widgets module holds functions that improve readability for the creation of PySide widgets and layouts.
 
     def create_widgets(self):
         self.module_list_label = QLabel("Modules in Scene")
@@ -59,31 +61,7 @@ class ModuleBuilder(UIBase):
 
         self.module_features_label = QLabel("Features")
         
-        self.module_features_list = QListWidget()
-        self.module_features_list.itemClicked.connect(self.on_feature_clicked)
-
-        self.features_add_button = widgets.initialize_button_widget("Create", self.create_module, enabled=False)
-
-        self.features_remove_button = widgets.initialize_button_widget("Remove", self.remove_feature, enabled=False)
-
-        self.module_output_label = QLabel("Downstream Outputs")
-        
-        self.module_output_list = QListWidget()
-        self.module_output_list.itemClicked.connect(self.on_output_clicked)
-
-        self.output_add_button = widgets.initialize_button_widget("Add", self.open_add_output, enabled=False)
-
-        self.output_remove_button = widgets.initialize_button_widget("Remove", self.remove_output, enabled=False)
-
-        self.current_module_label = QLabel("Current Module")
-       
-        self.load_template_button = widgets.initialize_button_widget("Load Template", self.load_template, enabled=True)
-
-        self.save_as_template_button = widgets.initialize_button_widget("Save As Template", self.save_as_template, enabled=True)
-
-        self.attach_button = widgets.initialize_button_widget("Attach", self.attach_bind, enabled=True)
-
-        self.detach_button = widgets.initialize_button_widget("Detach", self.detach_bind, enabled=True)
+        "...More Widgets..."
     
     def create_layouts(self):
         module_select_layout = widgets.initialize_layout(
@@ -119,44 +97,7 @@ class ModuleBuilder(UIBase):
                        module_features_buttons_layout]
         )
 
-        module_output_buttons_layout = widgets.initialize_layout(
-            layout_type = QHBoxLayout(),
-            widgets = [self.output_add_button,
-                       self.output_remove_button]
-        )
-        
-        module_output_layout = widgets.initialize_layout(
-            layout_type = QVBoxLayout(),
-            widgets = [self.module_output_label,
-                       self.module_output_list,
-                       module_output_buttons_layout]
-        )
-
-        module_edit_layout = widgets.initialize_layout(
-            layout_type = QHBoxLayout(),
-            widgets = [module_input_layout,
-                       module_features_layout,
-                       module_output_layout
-                      ],
-            stretch=True
-        )
-
-        rig_buttons_layout = widgets.initialize_layout(
-            layout_type = QHBoxLayout(),
-            widgets = [self.load_template_button,
-                       self.save_as_template_button,
-                       self.attach_button,
-                       self.detach_button
-                       ]
-        )
-
-        right_layout = widgets.initialize_layout(
-            layout_type = QVBoxLayout(),
-            widgets = [module_edit_layout],
-            stretch=True
-        )
-
-        right_layout.addLayout(rig_buttons_layout)
+        "...More Layouts..."
 
         main_layout = widgets.initialize_layout(
             layout_type = QHBoxLayout(),
@@ -450,17 +391,4 @@ class ModuleBuilder(UIBase):
 
     def detach_bind(self):
         module_skeleton.disconnect_bind_skeleton()
-
-#Refresh my example scene for testing purposes
-if __name__ == "__main__":
-    import maya.cmds as cmds
-
-    current_scene = cmds.file(q=True, sn=True)
-
-    if current_scene:
-        cmds.file(current_scene, o=True, force=True)
-    else:
-        cmds.file(new=True, force=True)
-
-    ModuleBuilder()
 
