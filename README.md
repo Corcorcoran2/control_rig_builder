@@ -1,6 +1,6 @@
 [My website](www.jaspercorcoran.com)
 
-# control_rig_builder
+# Control Rig Builder
 This breakdown will cover more of the Python and Software Design aspects of my control rig pipeline tools.
 
 For my pipeline tools I am above all designing with the goal to make the tool easy to use by artists, and easy to extend by programmers. Project goals and requirements vary widely, so tools planned for adaptability and longevity are most likely to be kept and used in a pipeline.
